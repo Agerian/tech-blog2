@@ -8,6 +8,15 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(session({
+    secret: 'Super secret secret',
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000
+    },
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.set('view engine', 'handlebars');
 
 app.engine('handlebars', handlebars({
