@@ -1,25 +1,7 @@
 const router = require('express').Router();
-const { User } = require('../models');
+const { User } = require('../../models');
 
-router.post('/signup', async (req, res) => {
-    try {
-        const newUser = await User.create({
-            username: req.body.username,
-            password: req.body.password,
-        });
-
-        req.session.save(() => {
-            req.session.user_id = newUser.id;
-            req.session.username = newUser.username;
-            req.session.loggedIn = true;
-
-            res.redirect('/');
-        });
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
-
+// User Login ('/api/user/login')
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({
@@ -53,10 +35,37 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/');
-    });
+// User Logout ('/api/user/logout')
+router.post('/logout', (req, res) => {
+    if (req.session.logged_in) {
+      req.session.destroy(() => {
+        res.status(204).end();
+      });
+    } else {
+      res.status(404).end();
+    }
 });
+
+// User Signup ('/api/user)
+router.post('/', async (req, res) => {
+    try {
+        const newUser = await User.create({
+            username: req.body.username,
+            password: req.body.password,
+        });
+
+        req.session.save(() => {
+            req.session.user_id = newUser.id;
+            req.session.username = newUser.username;
+            req.session.logged_in = true;
+
+            res.redirect('/');
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+
 
 module.exports = router;
