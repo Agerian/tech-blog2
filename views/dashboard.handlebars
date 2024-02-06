@@ -1,0 +1,13 @@
+
+<h2>Welcome, {{username}}!</h2>
+
+{{#each posts}}
+  <div>
+    <h3>{{title}}</h3>
+    <p>{{content}}</p>
+    <p>Posted on {{createdAt}}</p>
+    <a href="/dashboard/edit/{{id}}">Edit</a> | <a href="/dashboard/delete/{{id}}">Delete</a>
+  </div>
+{{/each}}
+
+<!-- Include forms or links for creating, updating, and deleting posts -->
