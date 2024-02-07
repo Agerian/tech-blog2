@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { User } = require('../../models');
 const bcrypt = require('bcrypt');
+const withAuth = require('../../utils/auth');
 
 // User Login ('/api/user/login')
 router.post('/login', async (req, res) => {
@@ -40,12 +41,15 @@ router.post('/login', async (req, res) => {
 });
 
 // User Logout ('/api/user/logout')
-router.post('/logout', (req, res) => {
-    if (req.session.logged_in) {
+router.post('/logout', withAuth, async (req, res) => {
+    console.log('Logout request recieved:', req.session)
+    if (req.session.loggedIn) {
+//      console.log('Destroying session:', req.session.id)
       req.session.destroy(() => {
         res.status(204).end();
       });
     } else {
+      console.log('No session to destroy')
       res.status(404).end();
     }
 });
@@ -66,7 +70,7 @@ router.post('/', async (req, res) => {
         req.session.save(() => {
             req.session.user_id = newUser.id;
             req.session.username = newUser.username;
-            req.session.logged_in = true;
+            req.session.loggedIn = true;
 
             res.redirect('/');
         });
@@ -75,7 +79,5 @@ router.post('/', async (req, res) => {
         res.status(500).json(err);
     }
 });
-
-
 
 module.exports = router;
