@@ -4,16 +4,20 @@ const loginFormHandler = async (event) => {
   const email = document.querySelector('#email-login').value.trim();
   const password = document.querySelector('#password-login').value.trim();
 
+  console.log('Login form submitted:', email, password)
+
   if (email && password) {
-    const response = await fetch('/api/users/login', {
+    const response = await fetch('/api/user/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
       headers: { 'Content-Type': 'application/json' },
     });
 
     if (response.ok) {
+      console.log('Login successful');
       document.location.replace('/');
     } else {
+      console.log('Login failed');
       alert('Failed to log in');
     }
   }
